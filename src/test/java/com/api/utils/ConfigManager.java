@@ -26,7 +26,7 @@ public class ConfigManager {
 
 		case "uat" -> path = "config/config.uat.properties";
 
-		default -> path = "config/config.uat.properties";
+		default -> path = "config/config.qa.properties";
 
 		}
 
