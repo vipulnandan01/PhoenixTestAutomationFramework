@@ -5,6 +5,8 @@ import static org.hamcrest.Matchers.*;
 
 import org.testng.annotations.Test;
 
+import com.api.utils.SpecUtil;
+
 import static com.api.constants.Role.*;
 import static com.api.utils.AuthTokenProvider.*;
 
@@ -19,22 +21,13 @@ public class CountAPITest
 	@Test
 	public void verifyCountAPIResponse()
 	{
-		Header header= new Header("Authorization", getToken(FD));
-		
 		given()
-			.baseUri(getProperty("BASE_URI"))
-			.contentType(ContentType.JSON)
-			.header(header)
-			.log().uri()
-			.log().method()
-			.log().headers()
+			.spec(SpecUtil.requestSpecWithAuth(FD))
 		.when()
 			.get("/dashboard/count")
 		.then()
-			.log().all()
-			.statusCode(200)
+			.spec(SpecUtil.responseSpec_OK())
 			.body("message", equalTo("Success"))
-			.time(lessThan(1500L))
 			.body("data", notNullValue())
 			.body("data.size()", equalTo(3))
 			.body("data.count", everyItem(greaterThanOrEqualTo(0)))
@@ -47,15 +40,10 @@ public class CountAPITest
 	public void countAPITest_MissingAuthToken()
 	{
 		given()
-			.baseUri(getProperty("BASE_URI"))
-			.contentType(ContentType.JSON)
-			.log().uri()
-			.log().method()
-			.log().headers()
+			.spec(SpecUtil.requestSpec())
 		.when()
 			.get("/dashboard/count")
 		.then()
-			.log().all()
-			.statusCode(401);
+			.spec(SpecUtil.responseSpec_TEXT(401));
 	}
 }
